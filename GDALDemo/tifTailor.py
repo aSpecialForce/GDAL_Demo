@@ -2,7 +2,6 @@
 import operator
 from osgeo import gdal, gdal_array, osr
 import shapefile
-
 from PIL import Image
 from PIL import ImageDraw
 
@@ -50,6 +49,7 @@ def WriteTiff(im_data,im_width,im_height,im_bands,im_geotrans,im_proj,no_data,pa
             band.SetNoDataValue(no_data)
             #band.ComputeStatistics(True)
             band.WriteArray(im_data[i])
+        print('保存文件成功:'+path)
     else:
         print('保存文件失败:'+path)
     del dataset

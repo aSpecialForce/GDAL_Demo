@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>bf0b6f1f-0c87-4302-9a47-3daedc6195f4</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>GDALDemo.py</StartupFile>
+    <StartupFile>tifTailor.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,8 +22,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="KDTreeDemo.py" />
-    <Compile Include="GDALDemo.py" />
+    <Compile Include="kdTreeDemo.py" />
+    <Compile Include="tifTailor.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda37-64" />
