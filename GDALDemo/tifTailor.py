@@ -4,7 +4,12 @@ from osgeo import gdal, gdal_array, osr
 import shapefile
 from PIL import Image
 from PIL import ImageDraw
+import datetime
+import os
 
+SOURCE_DIR = './source/'
+OUTPUT_DIR = './cliped/'
+CONFIG_DIR = './config/'
  
 def Image2Array(i):
     #将一个Python图像库的数组转换为一个gdal_array图片
@@ -88,19 +93,47 @@ def ClipRasterByVector(rasterfiel,vectorfile,outputfile):
     # 根据掩膜图层对图像进行裁剪
     no_data_value = -9999.0
     clip = gdal_array.numpy.choose(mask, (clip,no_data_value)).astype(gdal_array.numpy.float32)
-    print (clip.max())
     
     WriteTiff(clip,pxWidth,pxHeight,im_bands,geoTrans,srcRaster.GetProjection(),no_data_value,outputfile)
 
+def FindNewestDir():
+    iMaxLastDay = -30
+    bFind = False
+    strDataDate = ''
+    strYear = ''
+    strDataDir = ''
+    iLastDay=0
+    while (not bFind):
+        strDataDate = (datetime.datetime.now()+datetime.timedelta(iLastDay)).strftime('%Y_%m%d')
+        strYear = strDataDate[0:4]
+        strDataDir = SOURCE_DIR+strYear+'/'+strDataDate+'/'
+        if os.path.exists(strDataDir):
+            bFind = True 
+        else:
+            iLastDay = iLastDay - 1
+        if iLastDay < iMaxLastDay:
+            break
+    return bFind,strDataDir,strDataDate
+
+def ClipTif():
+    bFind,strDataDir,strLastDirName = FindNewestDir()
+    strDataFileName = ''
+    if bFind:
+        allFile = os.listdir(strDataDir)
+        if len(allFile) > 0:
+            strDataFileName = allFile[0]
+
+    if len(strDataFileName) == 0:
+        print("未找到数据")
+        return 
+    else:
+        print("待处理的数据为：" + strDataDir + strDataFileName)
+
+    shp = CONFIG_DIR + 'xinjiangprovince.shp'
+    outputDirTemp = OUTPUT_DIR + strLastDirName[0:4] +'/'+ strLastDirName+'/'
+    if not os.path.exists(outputDirTemp):
+        os.makedirs(outputDirTemp)
+    ClipRasterByVector(strDataDir + strDataFileName,shp,outputDirTemp + strDataFileName)
+
 if __name__ == '__main__':
-    testDir = 'F:\\WORK\\TestCodes\\python\\GDALDemo\\GDALDemo\\test\\'
-    rasterFileList=[]
-    rasterFileList.append('SNOW_3Day_4km_2019_0321_v1.tif')
-    rasterFileList.append('SNOW_3Day_4km_2019_0327_v1.tif')
-    rasterFileList.append('SNOW_3Day_4km_2019_0725_v1.tif')
-    rasterFileList.append('SNOW_3Day_4km_2019_0728_v1.tif')
-
-    shp = testDir+'xinjiangprovince.shp'
-
-    for rasterFile in rasterFileList:
-        ClipRasterByVector(testDir+rasterFile,shp,testDir+'output\\'+rasterFile)
+    ClipTif()
