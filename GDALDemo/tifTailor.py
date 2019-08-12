@@ -7,9 +7,10 @@ from PIL import ImageDraw
 import datetime
 import os
 
-SOURCE_DIR = './source/'
-OUTPUT_DIR = './cliped/'
-CONFIG_DIR = './config/'
+WORK_DIR = './'
+SOURCE_DIR = WORK_DIR+'source/'
+OUTPUT_DIR = WORK_DIR+'cliped/'
+CONFIG_DIR = WORK_DIR+'config/'
  
 def Image2Array(i):
     #将一个Python图像库的数组转换为一个gdal_array图片
@@ -124,7 +125,7 @@ def ClipTif():
             strDataFileName = allFile[0]
 
     if len(strDataFileName) == 0:
-        print("未找到数据")
+        print("未找到数据,路径为:" + WORK_DIR)
         return 
     else:
         print("待处理的数据为：" + strDataDir + strDataFileName)
