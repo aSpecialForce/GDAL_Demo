@@ -6,6 +6,7 @@ from PIL import Image
 from PIL import ImageDraw
 import datetime
 import os
+import time
 
 WORK_DIR = './'
 SOURCE_DIR = WORK_DIR+'source/'
@@ -97,6 +98,25 @@ def ClipRasterByVector(rasterfiel,vectorfile,outputfile):
     
     WriteTiff(clip,pxWidth,pxHeight,im_bands,geoTrans,srcRaster.GetProjection(),no_data_value,outputfile)
 
+def DelFilesByModifyTime(dstDir,daysBefore):
+    strDaysBeforeDate = (datetime.datetime.now() + datetime.timedelta(days = (0-daysBefore))).strftime('%Y%m%d')
+    if not os.path.exists(dstDir):
+        return
+    allFile = os.listdir(dstDir)
+    for fileName in allFile:
+        try:
+            full_path = os.path.join(dstDir, fileName)
+            if(os.path.isdir(full_path)):
+                DelFilesByModifyTime(full_path,daysBefore)
+            elif(os.path.isfile(full_path)):
+                mdify_time = os.stat(full_path).st_mtime
+                file_modify_time = time.strftime('%Y%m%d', time.localtime(mdify_time))
+                if int(file_modify_time) < int(strDaysBeforeDate):
+                    os.remove(full_path)
+                    print('删除文件'+full_path)
+        except Exception as e:
+            print(e)
+
 def FindNewestDir():
     iMaxLastDay = -30
     bFind = False
@@ -135,6 +155,8 @@ def ClipTif():
     if not os.path.exists(outputDirTemp):
         os.makedirs(outputDirTemp)
     ClipRasterByVector(strDataDir + strDataFileName,shp,outputDirTemp + strDataFileName)
+    
+    DelFilesByModifyTime(OUTPUT_DIR,10)
 
 if __name__ == '__main__':
     ClipTif()
