@@ -7,6 +7,7 @@ from PIL import ImageDraw
 import datetime
 import os
 import time
+import numpy as np
 
 WORK_DIR = './'
 SOURCE_DIR = WORK_DIR+'source/'
