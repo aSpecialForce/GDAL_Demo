@@ -118,7 +118,7 @@ def DelFilesByModifyTime(dstDir,daysBefore):
         except Exception as e:
             print(e)
 
-def FindNewestDir():
+def FindNewestDir(province):
     iMaxLastDay = -30
     bFind = False
     strDataDate = ''
@@ -128,7 +128,7 @@ def FindNewestDir():
     while (not bFind):
         strDataDate = (datetime.datetime.now()+datetime.timedelta(iLastDay)).strftime('%Y_%m%d')
         strYear = strDataDate[0:4]
-        strDataDir = SOURCE_DIR+strYear+'/'+strDataDate+'/'
+        strDataDir = SOURCE_DIR+province + '/'+strYear+'/'+strDataDate+'/'
         if os.path.exists(strDataDir):
             bFind = True 
         else:
@@ -137,8 +137,8 @@ def FindNewestDir():
             break
     return bFind,strDataDir,strDataDate
 
-def ClipTif():
-    bFind,strDataDir,strLastDirName = FindNewestDir()
+def ClipTif(province):
+    bFind,strDataDir,strLastDirName = FindNewestDir(province)
     strDataFileName = ''
     if bFind:
         allFile = os.listdir(strDataDir)
@@ -146,13 +146,13 @@ def ClipTif():
             strDataFileName = allFile[0]
 
     if len(strDataFileName) == 0:
-        print("未找到数据,路径为:" + WORK_DIR)
+        print("未找到数据,路径为:" + WORK_DIR+province)
         return 
     else:
         print("待处理的数据为：" + strDataDir + strDataFileName)
 
-    shp = CONFIG_DIR + 'xinjiangprovince.shp'
-    outputDirTemp = OUTPUT_DIR + strLastDirName[0:4] +'/'+ strLastDirName+'/'
+    shp = CONFIG_DIR + province + '/shp/' + province+".shp"
+    outputDirTemp = OUTPUT_DIR + province +'/'+ strLastDirName[0:4] +'/'+ strLastDirName+'/'
     if not os.path.exists(outputDirTemp):
         os.makedirs(outputDirTemp)
     ClipRasterByVector(strDataDir + strDataFileName,shp,outputDirTemp + strDataFileName)
@@ -160,4 +160,5 @@ def ClipTif():
     DelFilesByModifyTime(OUTPUT_DIR,10)
 
 if __name__ == '__main__':
-    ClipTif()
+    ClipTif('xinjiang')
+    ClipTif('xizang')
