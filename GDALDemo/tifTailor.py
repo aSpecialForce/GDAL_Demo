@@ -10,7 +10,8 @@ import time
 import numpy as np
 import requests
 
-WORK_DIR = './'
+#WORK_DIR = './'
+WORK_DIR = '/usr/local/model/GisData/ServiceData/ModelBase_Data/RemoteSensing/Snowmelt/'
 SOURCE_DIR = WORK_DIR+'source/'
 OUTPUT_DIR = WORK_DIR+'cliped/'
 CONFIG_DIR = WORK_DIR+'config/'
