@@ -8,6 +8,7 @@ import datetime
 import os
 import time
 import numpy as np
+import requests
 
 WORK_DIR = './'
 SOURCE_DIR = WORK_DIR+'source/'
@@ -137,6 +138,20 @@ def FindNewestDir(province):
             break
     return bFind,strDataDir,strDataDate
 
+def RequestGet(headers,url,bPrintResult = True):
+    print('RequestGet......b...e...g...i...n.......')
+    print("url = " + url)
+    str_result = ""
+
+    response = requests.get(url=url,headers=headers)
+
+    str_result = response.text
+    if bPrintResult:
+        print(str_result)
+
+    print('......e...n...d.......')
+    return str_result
+
 def ClipTif(province):
     bFind,strDataDir,strLastDirName = FindNewestDir(province)
     strDataFileName = ''
@@ -157,6 +172,13 @@ def ClipTif(province):
         os.makedirs(outputDirTemp)
     ClipRasterByVector(strDataDir + strDataFileName,shp,outputDirTemp + strDataFileName)
     
+    try:
+        header={"Accept": "application/json;charset=UTF-8"}
+        str_tif_folder = outputDirTemp
+        tif_url = 'http://10.3.10.116:3012/gsafety/model/snowmeltfloods/snowmelt/tiffofyaoganresolver?tiffOfYaoganPathStr={0}'.format(str_tif_folder)
+        RequestGet(header,tif_url,False)
+    except Exception as e:
+        print(e)
     DelFilesByModifyTime(OUTPUT_DIR,10)
 
 if __name__ == '__main__':
