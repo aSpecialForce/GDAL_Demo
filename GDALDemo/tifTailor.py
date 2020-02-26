@@ -175,7 +175,7 @@ def ClipTif(province):
     
     try:
         header={"Accept": "application/json;charset=UTF-8"}
-        str_tif_folder = outputDirTemp
+        str_tif_folder = outputDirTemp[0:len(outputDirTemp)-1]
         pro_type = 1
         if province == 'xizang':
             pro_type = 2
