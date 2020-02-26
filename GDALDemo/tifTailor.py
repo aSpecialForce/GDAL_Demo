@@ -176,7 +176,10 @@ def ClipTif(province):
     try:
         header={"Accept": "application/json;charset=UTF-8"}
         str_tif_folder = outputDirTemp
-        tif_url = 'http://10.3.10.116:3012/gsafety/model/snowmeltfloods/snowmelt/tiffofyaoganresolver?tiffOfYaoganPathStr={0}'.format(str_tif_folder)
+        pro_type = 1
+        if province == 'xizang':
+            pro_type = 2
+        tif_url = 'http://10.3.10.116:3012/gsafety/model/snowmeltfloods/snowmelt/tiffofyaoganresolver?tiffOfYaoganPathStr={0}&type={1}'.format(str_tif_folder,pro_type)
         RequestGet(header,tif_url,False)
     except Exception as e:
         print(e)
